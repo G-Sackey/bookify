@@ -1,10 +1,22 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
 
+import 'package:bookify/states/currentuser.dart';
 import 'package:bookify/widgets/ourcontainer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ourSignUpForm extends StatelessWidget {
+class ourSignUpForm extends StatefulWidget {
   const ourSignUpForm({super.key});
+
+  @override
+  State<ourSignUpForm> createState() => _ourSignUpFormState();
+}
+
+class _ourSignUpFormState extends State<ourSignUpForm> {
+  TextEditingController _fullnameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +38,7 @@ class ourSignUpForm extends StatelessWidget {
             ),
           ),
           TextFormField(
+            controller: _fullnameController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.alternate_email), hintText: 'Full Name'),
           ),
@@ -33,6 +46,7 @@ class ourSignUpForm extends StatelessWidget {
             height: 20,
           ),
           TextFormField(
+            controller: _emailController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.alternate_email), hintText: 'Email'),
           ),
@@ -40,6 +54,7 @@ class ourSignUpForm extends StatelessWidget {
             height: 20,
           ),
           TextFormField(
+            controller: _passwordController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock_outline), hintText: 'Password'),
             obscureText: true,
@@ -48,6 +63,7 @@ class ourSignUpForm extends StatelessWidget {
             height: 20,
           ),
           TextFormField(
+            controller: _confirmPasswordController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock_open),
                 hintText: 'Confirm Password'),
@@ -57,7 +73,12 @@ class ourSignUpForm extends StatelessWidget {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              if (_passwordController.text == _confirmPasswordController.text) {
+                _signUpUser(
+                    _emailController.text, _passwordController.text, context);
+              }
+            },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
               child: Text(
@@ -73,5 +94,17 @@ class ourSignUpForm extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+void _signUpUser(String email, String password, BuildContext context) async {
+  CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+
+  try {
+    if (await _currentUser.signUpUser(email, password)) {
+      Navigator.pop(context);
+    }
+  } catch (e) {
+    print(e);
   }
 }
