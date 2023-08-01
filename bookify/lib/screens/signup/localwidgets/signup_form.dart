@@ -18,6 +18,24 @@ class _ourSignUpFormState extends State<ourSignUpForm> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
 
+  void _signUpUser(String email, String password, BuildContext context) async {
+    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+
+    try {
+      String _returnString = await _currentUser.signUpUser(email, password);
+      if (_returnString == 'success') {
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(_returnString),
+          duration: Duration(seconds: 2),
+        ));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ourContainer(
@@ -56,7 +74,8 @@ class _ourSignUpFormState extends State<ourSignUpForm> {
           TextFormField(
             controller: _passwordController,
             decoration: InputDecoration(
-                prefixIcon: Icon(Icons.lock_outline), hintText: 'Password'),
+                prefixIcon: Icon(Icons.lock_outline),
+                hintText: 'Password 6 char minimum'),
             obscureText: true,
           ),
           SizedBox(
@@ -66,7 +85,7 @@ class _ourSignUpFormState extends State<ourSignUpForm> {
             controller: _confirmPasswordController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock_open),
-                hintText: 'Confirm Password'),
+                hintText: 'Confirm Password 6 char minimum'),
             obscureText: true,
           ),
           SizedBox(
@@ -77,6 +96,11 @@ class _ourSignUpFormState extends State<ourSignUpForm> {
               if (_passwordController.text == _confirmPasswordController.text) {
                 _signUpUser(
                     _emailController.text, _passwordController.text, context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Passwords Do Not Match'),
+                  duration: Duration(seconds: 2),
+                ));
               }
             },
             child: Padding(
@@ -94,17 +118,5 @@ class _ourSignUpFormState extends State<ourSignUpForm> {
         ],
       ),
     );
-  }
-}
-
-void _signUpUser(String email, String password, BuildContext context) async {
-  CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
-
-  try {
-    if (await _currentUser.signUpUser(email, password)) {
-      Navigator.pop(context);
-    }
-  } catch (e) {
-    print(e);
   }
 }
