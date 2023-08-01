@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 
 import '../../../states/currentuser.dart';
 
+enum LoginType { email, google }
+
 class ourLoginForm extends StatefulWidget {
   const ourLoginForm({super.key});
 
@@ -19,12 +21,31 @@ class _ourLoginFormState extends State<ourLoginForm> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  void _loginUser(String email, String password, BuildContext context) async {
+  void _loginUser(
+      {required LoginType type,
+      required String email,
+      required String password,
+      required BuildContext context}) async {
     CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
 
     try {
-      String _returnString =
-          await _currentUser.loginUserWithEmail(email, password);
+      String _returnString;
+
+      switch (type) {
+        case LoginType.email:
+          _returnString =
+              await _currentUser.loginUserWithEmail(email, password);
+
+          break;
+        case LoginType.google:
+          _returnString = await _currentUser.loginUserWithGoogle();
+
+          break;
+        default:
+      }
+
+      _returnString = 'success';
+
       if (_returnString == 'success') {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => HomeScreen()));
@@ -37,6 +58,44 @@ class _ourLoginFormState extends State<ourLoginForm> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Widget _googleButton() {
+    return OutlinedButton(
+      onPressed: () {
+        _loginUser(
+          type: LoginType.google,
+          context: context,
+          email: '',
+          password: '',
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Expanded(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const <Widget>[
+              Image(
+                image: AssetImage("assets/search.png"),
+                height: 25.0,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text(
+                  'Sign in with Google',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -78,7 +137,10 @@ class _ourLoginFormState extends State<ourLoginForm> {
           ElevatedButton(
             onPressed: () {
               _loginUser(
-                  _emailController.text, _passwordController.text, context);
+                  type: LoginType.email,
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                  context: context);
             },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 50),
@@ -105,6 +167,7 @@ class _ourLoginFormState extends State<ourLoginForm> {
             },
             child: const Text("Don't have an account? Sign Up here"),
           ),
+          _googleButton()
         ],
       ),
     );
