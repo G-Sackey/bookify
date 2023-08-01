@@ -47,8 +47,7 @@ class _ourLoginFormState extends State<ourLoginForm> {
       _returnString = 'success';
 
       if (_returnString == 'success') {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.pushNamed(context, 'home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(_returnString),

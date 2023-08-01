@@ -1,7 +1,9 @@
 import 'dart:ffi';
 
 import 'package:bookify/firebase_options.dart';
+import 'package:bookify/screens/home/home.dart';
 import 'package:bookify/screens/login/login.dart';
+import 'package:bookify/screens/root/root.dart';
 import 'package:bookify/screens/signup/localwidgets/signup_form.dart';
 import 'package:bookify/states/currentuser.dart';
 import 'package:bookify/utils/ourtheme.dart';
@@ -26,7 +28,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: OurTheme().buildTheme(),
-        home: const OurLogin(),
+        home: const OurRoot(),
+        routes: {
+          'root': (context) => OurRoot(),
+          'home': (context) => HomeScreen(),
+        },
       ),
     );
   }
