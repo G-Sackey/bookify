@@ -1,14 +1,16 @@
+import 'package:bookify/main.dart';
+import 'package:bookify/models/user.dart';
+import 'package:bookify/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class CurrentUser extends ChangeNotifier {
-  late String _uid;
-  late String _email;
+  OurUser _currentUser =
+      OurUser(uid: '', accountCreated: null, email: '', fullName: '');
 
-  String get getUid => _uid;
-  String get getEmail => _email;
+  OurUser get getcurrentUser => _currentUser;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -17,8 +19,8 @@ class CurrentUser extends ChangeNotifier {
 
     try {
       User? _firebaseUser = await _auth.currentUser;
-      _uid = _firebaseUser!.uid;
-      _email = _firebaseUser.email!;
+      _currentUser.uid = _firebaseUser!.uid;
+      _currentUser.email = _firebaseUser.email!;
       retVal = 'success';
     } catch (e) {
       print(e);
@@ -32,8 +34,8 @@ class CurrentUser extends ChangeNotifier {
 
     try {
       await _auth.signOut();
-      _uid = "";
-      _email = "";
+      _currentUser =
+          OurUser(uid: '', accountCreated: null, email: '', fullName: '');
       retVal = 'success';
     } catch (e) {
       print(e);
@@ -42,14 +44,24 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-  Future<String> signUpUser(String email, String password) async {
+  Future<String> signUpUser(
+      String email, String password, String fullName) async {
     String retVal = "error";
+    OurUser _user =
+        OurUser(uid: '', email: '', fullName: '', accountCreated: null);
 
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential _userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      _user.uid = _userCredential.user!.uid;
+      _user.email = _userCredential.user!.email!;
+      _user.fullName = fullName;
 
-      retVal = 'success';
+      String _returnString = await OurDatabase().createUser(_user);
+
+      if (_returnString == 'success') {
+        retVal = 'success';
+      }
     } catch (e) {
       print('Error: ${e.toString()}');
     }
@@ -65,8 +77,8 @@ class CurrentUser extends ChangeNotifier {
           email: email, password: password);
 
       if (_userCredential.user != null) {
-        _uid = _userCredential.user!.uid;
-        _email = _userCredential.user!.email!;
+        _currentUser.uid = _userCredential.user!.uid;
+        _currentUser.email = _userCredential.user!.email!;
         retVal = "success";
       }
     } catch (e) {
@@ -85,6 +97,9 @@ class CurrentUser extends ChangeNotifier {
       ],
     );
 
+    OurUser _user =
+        OurUser(uid: '', email: '', fullName: '', accountCreated: null);
+
     try {
       GoogleSignInAccount? _googleUser = await _googleSignIn.signIn();
       GoogleSignInAuthentication _googleAuth =
@@ -94,9 +109,15 @@ class CurrentUser extends ChangeNotifier {
 
       UserCredential _userCredential =
           await _auth.signInWithCredential(credential);
+      if (_userCredential.additionalUserInfo!.isNewUser) {
+        _user.uid = _userCredential.user!.uid;
+        _user.email = _userCredential.user!.email!;
+        _user.fullName = _userCredential.user!.displayName!;
+        OurDatabase().createUser(_user);
+      }
       if (_userCredential.user != null) {
-        _uid = _userCredential.user!.uid;
-        _email = _userCredential.user!.email!;
+        _currentUser.uid = _userCredential.user!.uid;
+        _currentUser.email = _userCredential.user!.email!;
         retVal = "success";
       }
     } catch (e) {
