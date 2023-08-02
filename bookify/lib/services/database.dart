@@ -28,12 +28,12 @@ class OurDatabase {
         OurUser(uid: '', email: '', fullName: '', accountCreated: null);
 
     try {
-      DocumentSnapshot <Object> _docSnapShot =
+      DocumentSnapshot<Map<String, dynamic>> docSnapShot =
           await _firestore.collection('users').doc(uid).get();
       retVal.uid = uid;
-      retVal.fullName = _docSnapShot.data()['fullname']?
-      retVal.email = _docSnapShot.data()?['email'];
-      retVal.accountCreated = _docSnapShot.data()['accountCreated'];
+      retVal.fullName = docSnapShot.data()!['fullname'];
+      retVal.email = docSnapShot.data()!['email'];
+      retVal.accountCreated = docSnapShot.data()!['accountCreated'];
     } catch (e) {
       print(e);
     }

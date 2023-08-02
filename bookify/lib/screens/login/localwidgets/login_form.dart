@@ -60,7 +60,8 @@ class _ourLoginFormState extends State<ourLoginForm> {
   }
 
   Widget _googleButton() {
-    return OutlinedButton(
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
       onPressed: () {
         _loginUser(
           type: LoginType.google,
@@ -134,6 +135,7 @@ class _ourLoginFormState extends State<ourLoginForm> {
             height: 20,
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
             onPressed: () {
               _loginUser(
                   type: LoginType.email,

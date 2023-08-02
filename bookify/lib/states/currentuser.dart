@@ -3,6 +3,7 @@ import 'package:bookify/models/user.dart';
 import 'package:bookify/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
@@ -19,9 +20,12 @@ class CurrentUser extends ChangeNotifier {
 
     try {
       User? _firebaseUser = await _auth.currentUser;
-      _currentUser.uid = _firebaseUser!.uid;
-      _currentUser.email = _firebaseUser.email!;
-      retVal = 'success';
+      if (_firebaseUser != null) {
+        _currentUser = await OurDatabase().getUserInfo(_firebaseUser.uid);
+        if (_currentUser != null) {
+          retVal = 'success';
+        }
+      }
     } catch (e) {
       print(e);
     }
@@ -76,10 +80,9 @@ class CurrentUser extends ChangeNotifier {
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
 
-      if (_userCredential.user != null) {
-        _currentUser.uid = _userCredential.user!.uid;
-        _currentUser.email = _userCredential.user!.email!;
-        retVal = "success";
+      _currentUser = await OurDatabase().getUserInfo(_userCredential.user!.uid);
+      if (_currentUser != null) {
+        retVal = 'success';
       }
     } catch (e) {
       print('Error: ${e.toString()}');
@@ -115,12 +118,12 @@ class CurrentUser extends ChangeNotifier {
         _user.fullName = _userCredential.user!.displayName!;
         OurDatabase().createUser(_user);
       }
-      if (_userCredential.user != null) {
-        _currentUser.uid = _userCredential.user!.uid;
-        _currentUser.email = _userCredential.user!.email!;
-        retVal = "success";
+
+      _currentUser = await OurDatabase().getUserInfo(_userCredential.user!.uid);
+      if (_currentUser != null) {
+        retVal = 'success';
       }
-    } catch (e) {
+    } on PlatformException catch (e) {
       print('Error: ${e.toString()}');
     }
 
