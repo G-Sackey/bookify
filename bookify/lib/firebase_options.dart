@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:643051674629:android:64c8aae6bb26c6b9dcd06c',
     messagingSenderId: '643051674629',
     projectId: 'bookify-21266',
+    databaseURL: 'https://bookify-21266-default-rtdb.firebaseio.com',
     storageBucket: 'bookify-21266.appspot.com',
   );
 
@@ -62,7 +63,9 @@ class DefaultFirebaseOptions {
     appId: '1:643051674629:ios:4aa79b309cbfb426dcd06c',
     messagingSenderId: '643051674629',
     projectId: 'bookify-21266',
+    databaseURL: 'https://bookify-21266-default-rtdb.firebaseio.com',
     storageBucket: 'bookify-21266.appspot.com',
+    androidClientId: '643051674629-5g70bfp9bqg64o2a77rcsc656dcud6p4.apps.googleusercontent.com',
     iosClientId: '643051674629-9ei4j2i5onocdlvmpoj6rqg2k0fpfeuc.apps.googleusercontent.com',
     iosBundleId: 'com.example.bookify',
   );
