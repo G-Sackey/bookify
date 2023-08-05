@@ -1,8 +1,12 @@
 import 'dart:ffi';
 
 import 'package:bookify/firebase_options.dart';
+import 'package:bookify/screens/chat/chat.dart';
+import 'package:bookify/screens/createGroup/createGroup.dart';
 import 'package:bookify/screens/home/home.dart';
+import 'package:bookify/screens/joinGroup/joinGroup.dart';
 import 'package:bookify/screens/login/login.dart';
+import 'package:bookify/screens/noGroup/noGroup.dart';
 import 'package:bookify/screens/root/root.dart';
 import 'package:bookify/screens/signup/localwidgets/signup_form.dart';
 import 'package:bookify/states/currentuser.dart';
@@ -30,8 +34,10 @@ class MyApp extends StatelessWidget {
         theme: OurTheme().buildTheme(),
         home: const OurRoot(),
         routes: {
-          'root': (context) => OurRoot(),
-          'home': (context) => HomeScreen(),
+          'root': (context) => const OurRoot(),
+          'home': (context) => const HomeScreen(),
+          'chat': (context) => const ChatScreen(),
+          'nogroup': (context) => const OurNoGroup(),
         },
       ),
     );

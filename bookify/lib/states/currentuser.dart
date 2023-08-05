@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 class CurrentUser extends ChangeNotifier {
   OurUser _currentUser =
-      OurUser(uid: '', accountCreated: null, email: '', fullName: '');
+      OurUser(uid: '', accountCreated: null, email: '', fullName: '', groupId: '');
 
   OurUser get getcurrentUser => _currentUser;
 
@@ -39,7 +39,7 @@ class CurrentUser extends ChangeNotifier {
     try {
       await _auth.signOut();
       _currentUser =
-          OurUser(uid: '', accountCreated: null, email: '', fullName: '');
+          OurUser(uid: '', accountCreated: null, email: '', fullName: '', groupId: '');
       retVal = 'success';
     } catch (e) {
       print(e);
@@ -52,7 +52,7 @@ class CurrentUser extends ChangeNotifier {
       String email, String password, String fullName) async {
     String retVal = "error";
     OurUser _user =
-        OurUser(uid: '', email: '', fullName: '', accountCreated: null);
+        OurUser(uid: '', email: '', fullName: '', accountCreated: null, groupId: '');
 
     try {
       UserCredential _userCredential = await _auth
@@ -101,7 +101,7 @@ class CurrentUser extends ChangeNotifier {
     );
 
     OurUser _user =
-        OurUser(uid: '', email: '', fullName: '', accountCreated: null);
+        OurUser(uid: '', email: '', fullName: '', accountCreated: null, groupId: '');
 
     try {
       GoogleSignInAccount? _googleUser = await _googleSignIn.signIn();

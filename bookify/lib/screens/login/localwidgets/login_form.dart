@@ -1,6 +1,6 @@
-// ignore_for_file: camel_case_types, prefer_const_constructors
+// ignore_for_file: camel_case_types, prefer_const_constructors, use_build_context_synchronously
 
-import 'package:bookify/screens/home/home.dart';
+import 'package:bookify/screens/root/root.dart';
 import 'package:bookify/screens/signup/signup.dart';
 import 'package:bookify/widgets/ourcontainer.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +46,9 @@ class _ourLoginFormState extends State<ourLoginForm> {
 
       _returnString = 'success';
 
-      if (_returnString == 'success') {
-        Navigator.pushNamed(context, 'home');
-      } else {
+      if (_returnString == 'success') {  
+        Navigator.pushNamed(context, 'root');
+          } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(_returnString),
           duration: Duration(seconds: 2),
